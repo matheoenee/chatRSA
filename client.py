@@ -20,16 +20,18 @@ pid = os.fork()
 
 #connexion succed
 while 1:
-    client_msg = input("[Client] > ")
-    my_socket.sendall(client_msg.encode())
-    if client_msg != "END":
+    if pid == 0:
+        #enfant = receveur
         server_msg = my_socket.recv(1024).decode()
         if server_msg != "END":
             print("[Server] > %s" % (server_msg))
         else:
             break
     else:
-        break
+        client_msg = input("[Client] > ")
+        my_socket.sendall(client_msg.encode())
+        if client_msg == "END":
+            break
 
 print("[-] Connection closed.")
 my_socket.close()
