@@ -1,6 +1,7 @@
 # Client programm
 import socket
 import sys
+import os
 
 host = '127.0.0.1' # accept all host
 port_number = 8080
@@ -15,8 +16,10 @@ except socket.error:
     sys.exit()
 print(f"[+] Connection established wither server {host} on port {port_number}.")
 
-connected = 1
-while(connected):
+pid = os.fork()
+
+#connexion succed
+while 1:
     client_msg = input("[Client] > ")
     my_socket.sendall(client_msg.encode())
     if client_msg != "END":
@@ -24,9 +27,9 @@ while(connected):
         if server_msg != "END":
             print("[Server] > %s" % (server_msg))
         else:
-            connected = 0
+            break
     else:
-        connected = 0
+        break
 
 print("[-] Connection closed.")
 my_socket.close()
