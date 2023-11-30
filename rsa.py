@@ -81,6 +81,26 @@ def RSA_key():
         return None
     return n, d, e
 
+def encrypt(message: str, n: int, e=65537):
+    #c = m^e mod n
+    m = ''
+    for letter in message:
+        o = ord(letter)
+        m += str(o)
+    c = lpowmod(int(m), e, n)
+    return c
+
+def decrypt(cipher: int, n: int, d):
+    uncipher = lpowmod(cipher, d, n)
+    mess = str(uncipher)
+    C = []
+    for i in range(len(mess)/2):
+        C.append(mess[2*i:2*(i+1)])
+    m = ''
+    for number in C:
+        m += chr(number)
+        
+
 
 if __name__ == "__main__":
     print(RSA_key())
