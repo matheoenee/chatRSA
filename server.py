@@ -1,7 +1,9 @@
 # Server programm
+import signal
 import socket
 import sys
 import os
+from rsa import *
 
 host = '127.0.0.1' # accept all host
 port_number = 8080
@@ -19,31 +21,45 @@ print("[+] Server ready for connection...")
 
 my_socket.listen(socket.SOMAXCONN)
 connection, address = my_socket.accept()
+# Connexion succeed
 print("[+] Client connected %s, port %s" % (address[0],address[1]))
+
+# RSA Handshake
+print("\n[RSA] Starting RSA Handshake.")
+print("[RSA] Waiting for client public key...")
+client_msg = connection.recv(1024).decode()
+n_client = int(client_msg)
+print(f"[RSA] Client public key is ({n_client}, 65537).")
+print("[RSA] Generating server public and private key...")
+# RSA Server data
+n, d, e = RSA_key()
+server_msg = str(n)
+connection.sendall(server_msg.encode())
+print("[RSA] Server public key sent.")
+print("[RSA] Handshake completed.\n")
 
 pid = os.fork()
 
-#connexion suceed
-while 1:
-    if pid == 0:
-        client_msg = connection.recv(1024).decode()
-        if client_msg != "END":
-            print("[Client] > %s" % (client_msg))
-            print(client_msg)
-        else:
-            #server_msg = "END" ça marche ?
-            break # ça marche pas vraiment
-    else:
-        server_msg = input("[Server] > ")
+if pid == 0:
+    # Child process (send messages)
+    # Add RSA
+    while(1):
+        server_msg = input()
         connection.sendall(server_msg.encode())
-        if server_msg == "END":
-            break #marche bien mais provoque un problème du côté client
-print("[-] Connection closed.")
-connection.close()
-#sys.exit() #ne marche pas
+        if server_msg == "\quit":
+            os.kill(os.getppid(), signal.SIGTERM)
+            break  # marche bien mais provoque un problème du côté client
+else:
+    # Parent process (receive messages)
+    while(1):
+        client_msg = connection.recv(1024).decode()
+        if client_msg != "\quit":
+            print("[Client] > %s" % (client_msg))
+        else:
+            os.kill(pid, signal.SIGTERM)
+            # server_msg = "END" ça marche ?
+            break  # ça marche pas vraiment
 
-"""
-soucis actuels :
-- mauvaie mise en page dès que 2 messages s'envoie à la suite
-- probème de fermeture de serveur : Normal ?
-"""
+print("\n[-] Connection closed.")
+connection.close()
+sys.exit()
