@@ -94,3 +94,4 @@ def decrypt(cipher: int, n: int, d):
 
 if __name__ == "__main__":
     print(RSA_key())
+    print("test")
