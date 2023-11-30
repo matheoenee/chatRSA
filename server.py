@@ -3,7 +3,7 @@ import signal
 import socket
 import sys
 import os
-import rsa
+from rsa import *
 
 host = '127.0.0.1' # accept all host
 port_number = 8080
@@ -32,12 +32,8 @@ n_client = int(client_msg)
 print(f"[RSA] Client public key is ({n_client}, 65537).")
 print("[RSA] Generating server public and private key...")
 # RSA Server data
-n_server = 7*19 # RSA prime generator function
-phi_n_server = 6*18
-e = 65537
-d_server = 53 # modular inverse function of
-# RSA public and private key function
-server_msg = str(n_server)
+n, d, e = RSA_key()
+server_msg = str(n)
 connection.sendall(server_msg.encode())
 print("[RSA] Server public key sent.")
 print("[RSA] Handshake completed.\n")
@@ -64,6 +60,6 @@ else:
             # server_msg = "END" ça marche ?
             break  # ça marche pas vraiment
 
-print("[-] Connection closed.")
+print("\n[-] Connection closed.")
 connection.close()
 sys.exit()
