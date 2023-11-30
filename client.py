@@ -1,4 +1,5 @@
 # Client programm
+import signal
 import socket
 import sys
 import os
@@ -14,24 +15,51 @@ try:
 except socket.error:
     print("ERROR : socket connection.")
     sys.exit()
-print(f"[+] Connection established wither server {host} on port {port_number}.")
+
+# Connexion succeed
+print(f"[+] Connection established with server {host} on port {port_number}.")
+
+# RSA Handshake
+print("\n[RSA] Starting RSA Handshake.")
+print("[RSA] Generating client public and private key...")
+# RSA Server data
+n_client = 7*11 # RSA prime generator function
+phi_n_server = 6*10
+e = 65537
+d_client = 53 # modular inverse function of
+# RSA public and private key function
+client_msg = str(n_client)
+my_socket.sendall(client_msg.encode())
+print("[RSA] Client public key sent.")
+print("[RSA] Waiting for server public key...")
+server_msg = my_socket.recv(1024).decode()
+n_server= int(server_msg)
+print(f"[RSA] Server public key is ({n_server}, 65537).")
+print("[RSA] Handshake completed.\n")
 
 pid = os.fork()
 
-#connexion succed
-while 1:
-    if pid == 0:
-        #enfant = receveur
+if pid == 0:
+    # Child process (send messages)
+    while(1):
+        client_msg = input()
+        # encode with RSA (server public key)
+        my_socket.sendall(client_msg.encode())
+        if client_msg == "\quit":
+            os.kill(os.getppid(), signal.SIGTERM)
+            break
+else:
+    # Parent process (receive messages)
+    while(1):
         server_msg = my_socket.recv(1024).decode()
-        if server_msg != "END":
+        # decode with RSA (server private key)
+        if server_msg != "\quit":
             print("[Server] > %s" % (server_msg))
         else:
+            os.kill(pid, signal.SIGTERM)
             break
-    else:
-        client_msg = input("[Client] > ")
-        my_socket.sendall(client_msg.encode())
-        if client_msg == "END":
-            break
+
 
 print("[-] Connection closed.")
 my_socket.close()
+sys.exit()
