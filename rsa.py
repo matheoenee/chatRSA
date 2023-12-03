@@ -1,6 +1,7 @@
 import random
 import subprocess
 import re
+from math import log
 
 def egcd(a, b):
     x,y, u,v = 0,1, 1,0
@@ -73,25 +74,32 @@ def RSA_key():
 
 def encrypt(message: str, n: int, e=65537):
     #c = m^e mod n
-    m = ''
+    i = 1
+    m = 0
     for letter in message:
-        o = ord(letter)
-        m += str(o)
-    c = lpowmod(int(m), e, n)
+        m += ord(letter) * i
+        i *= 256
+    c = lpowmod(m, e, n)
     return c
 
 def decrypt(cipher: int, n: int, d):
     uncipher = lpowmod(cipher, d, n)
-    mess = str(uncipher)
-    C = []
-    for i in range(len(mess)/2):
-        C.append(mess[2*i:2*(i+1)])
-    m = ''
-    for number in C:
-        m += chr(number)
-        
+    l = int(log(uncipher, 256))+1
+    message = ''
+    while uncipher != 0:
+        number = uncipher % 256
+        message += chr(number)
+        uncipher = uncipher // 256
+    return message        
 
 
 if __name__ == "__main__":
-    print(RSA_key())
-    print("test")
+    print("Test Area !")
+    print("Searching for RSA public and private key ...")
+    N, D, E = RSA_key()
+    print("key founded !")
+
+    test = 'Hello World'
+    cipher_test = encrypt(test, N)
+    decrypted_test = decrypt(cipher_test, N, D)
+    print(f"Original message : {test}\nCiphered message : {cipher_test}\nEnciphered Message : {decrypted_test}")
