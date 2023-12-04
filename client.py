@@ -25,11 +25,17 @@ print("\n[RSA] Starting RSA Handshake.")
 print("[RSA] Generating client public and private key...")
 # RSA Server data
 n, d, e = RSA_key()
-client_msg = str(n)
+client_msg = str(n) + "\n"
 my_socket.sendall(client_msg.encode())
 print("[RSA] Client public key sent.")
 print("[RSA] Waiting for server public key...")
-server_msg = my_socket.recv(1024).decode()
+server_msg = ""
+# Boucle car on récupère les messages par blocs de 1024 bits
+while(1):
+    data = my_socket.recv(1024).decode()
+    if not data or "\n" in data:
+        break
+    server_msg += data
 n_server= int(server_msg)
 print(f"[RSA] Server public key is ({n_server}, 65537).")
 print("[RSA] Handshake completed.\n")
@@ -40,15 +46,22 @@ if pid == 0:
     # Child process (send messages)
     while(1):
         client_msg = input()
+        encrypted_client_msg = str(encrypt(client_msg + "\n", n_server))
         # encode with RSA (server public key)
-        my_socket.sendall(client_msg.encode())
+        my_socket.sendall(encrypted_client_msg.encode())
         if client_msg == "\quit":
             os.kill(os.getppid(), signal.SIGTERM)
             break
 else:
     # Parent process (receive messages)
     while(1):
-        server_msg = my_socket.recv(1024).decode()
+        server_msg = ""
+        while (1):
+            encrypted_data = int(my_socket.recv(1024).decode())
+            data = decrypt(encrypted_data, n, d)
+            if not data or "\n" in data:
+                break
+            server_msg += data
         # decode with RSA (server private key)
         if server_msg != "\quit":
             print("[Server] > %s" % (server_msg))
