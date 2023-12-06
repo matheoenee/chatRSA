@@ -1,7 +1,6 @@
 import random
 import subprocess
 import re
-from math import log
 
 def egcd(a, b):
     x,y, u,v = 0,1, 1,0
@@ -28,9 +27,13 @@ def lpowmod(x, y, n):
         x = (x*x)%n
         return result
 
+#générateur d'entier premier
 def prime_generator(lenght=1024):
+    #étape 1 : liste de 1024 chiffres
     A = random.choices(range(0,10), k=1024)
+    #pour changer le dernier nombre car il appartenait à [1,3,7,9]
     n1_choice = range(0,10)
+    #n0 permet d'éviter les cas pair et multiple de 5
     n0_choice = [1,3,7,9]
     while True:
         #on récupère les 1023 derniers chiffres
@@ -43,7 +46,7 @@ def prime_generator(lenght=1024):
         A.append(random.choice(n0_choice))
 
         a=''
-        #a est le nombre en str
+        #a est le nombre test en str
         a = ''.join(map(str,A))
 
         #p est un nombre a 1024 chiffres
