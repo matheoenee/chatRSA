@@ -29,13 +29,7 @@ print("\n[RSA] Starting RSA Handshake.")
 print("[RSA] Generating server public and private key...")
 n, d, e = RSA_key() # generating keys here to save time
 print("[RSA] Waiting for client public key...")
-client_msg = ""
-# Boucle car on récupère les messages par blocs de 1024 bits
-while(1):
-    data = connection.recv(1024).decode()
-    if not data or "\n" in data:
-        break
-    client_msg += data
+client_msg = connection.recv(4096).decode()
 n_client = int(client_msg)
 print(f"[RSA] Client public key is ({n_client}, 65537).")
 # RSA Server data
@@ -51,22 +45,19 @@ if pid == 0:
     # Add RSA
     while(1):
         server_msg = input()
-        encrypted_server_msg = str(encrypt(server_msg + "\n", n_client))
+        encrypted_server_msg = str(encrypt(server_msg, n_client))
         connection.sendall(encrypted_server_msg.encode())
         if server_msg == "\quit":
             os.kill(os.getppid(), signal.SIGTERM)
-            break  # marche bien mais provoque un problème du côté client
+            break
 else:
     # Parent process (receive messages)
     while(1):
         # Boucle car on récupère les messages par blocs de 1024 bits
         client_msg = ""
-        while(1):
-            encrypted_data = int(connection.recv(1024).decode())
-            data = decrypt(encrypted_data, n, d)
-            if not data or "\n" in data:
-                break
-            client_msg += data
+        encrypted_data = int(connection.recv(4096).decode())
+        data = decrypt(encrypted_data, n, d)
+        client_msg = data
         if client_msg != "\quit":
             print("[Client] > %s" % (client_msg))
         else:
