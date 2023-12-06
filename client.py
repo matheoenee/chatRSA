@@ -31,7 +31,7 @@ my_socket.sendall(client_msg.encode())
 print("[RSA] Client public key sent.")
 print("[RSA] Waiting for server public key...")
 server_msg = my_socket.recv(4096).decode()
-n_server= int(server_msg)
+n_server = int(server_msg)
 print(f"[RSA] Server public key is ({n_server}, 65537).")
 print("[RSA] Handshake completed.\n")
 

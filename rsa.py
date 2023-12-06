@@ -25,7 +25,7 @@ def lpowmod(x, y, n):
             result = (result*x)%n
         y >>= 1
         x = (x*x)%n
-        return result
+    return result
 
 #générateur d'entier premier
 def prime_generator(lenght=1024):

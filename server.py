@@ -5,8 +5,8 @@ import sys
 import os
 from rsa import *
 
-address = "172.20.10.13"
-#address = "127.0.0.1" #use for local connection
+#address = "172.20.10.13"
+address = "127.0.0.1" #use for local connection
 port_number = 8080
 
 # socket waiting for connection
