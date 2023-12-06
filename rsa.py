@@ -84,7 +84,6 @@ def encrypt(message: str, n: int, e=65537):
 
 def decrypt(cipher: int, n: int, d):
     uncipher = lpowmod(cipher, d, n)
-    l = int(log(uncipher, 256))+1
     message = ''
     while uncipher != 0:
         number = uncipher % 256
