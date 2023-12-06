@@ -34,6 +34,18 @@ n_server= int(server_msg)
 print(f"[RSA] Server public key is ({n_server}, 65537).")
 print("[RSA] Handshake completed.\n")
 
+
+"""Traceback (most recent call last):
+  File "/home/anthonyfraga/Bureau/chatRSA/client.py", line 57, in <module>
+    server_msg = decrypt(RSA_server_msg, n, d)
+  File "/home/anthonyfraga/Bureau/chatRSA/rsa.py", line 86, in decrypt
+    uncipher = lpowmod(cipher, d, n)
+  File "/home/anthonyfraga/Bureau/chatRSA/rsa.py", line 28, in lpowmod
+    x = (x*x)%n
+TypeError: can't multiply sequence by non-int of type 'str'
+"""
+
+
 pid = os.fork()
 
 if pid == 0:

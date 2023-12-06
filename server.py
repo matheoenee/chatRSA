@@ -62,9 +62,8 @@ else:
             print("[Client] > %s" % (client_msg))
         else:
             os.kill(pid, signal.SIGTERM)
-            # server_msg = "END" ça marche ?
-            break  # ça marche pas vraiment
+            break
 
-print("\n[-] Connection closed.")
+print("\n[-] Connection closed.")   
 connection.close()
 sys.exit()
