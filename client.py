@@ -5,8 +5,9 @@ import sys
 import os
 from rsa import *
 
-host = '127.0.0.1' # accept all host
+
 port_number = 8080
+host = input("Enter server IP address : ")
 
 # socket waiting for connection
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
