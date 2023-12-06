@@ -23,7 +23,7 @@ print("[+] Server ready for connection...")
 my_socket.listen(socket.SOMAXCONN)
 connection, address = my_socket.accept()
 # Connexion succeed
-print("[+] Client connected %s, port %s" % (address[0],address[1]))
+print(f"[+] Client connected {address[0]}, port {address[1]}")
 
 # RSA Handshake
 print("\n[RSA] Starting RSA Handshake.")
@@ -54,11 +54,10 @@ if pid == 0:
 else:
     # Parent process (receive messages)
     while(1):
-        # Boucle car on récupère les messages par blocs de 1024 bits
         encrypted_data = int(connection.recv(4096).decode())
         client_msg = decrypt(encrypted_data, n, d)
         if client_msg != "\quit":
-            print("[Client] > %s" % (client_msg))
+            print(f"[Client] > {client_msg}")
         else:
             os.kill(pid, signal.SIGTERM)
             break

@@ -52,11 +52,10 @@ else:
         encrypted_data = int(my_socket.recv(4096).decode())
         server_msg = decrypt(encrypted_data, n, d)
         if server_msg != "\quit":
-            print("[Server] > %s" % (server_msg))
+            print(f"[Server] > {server_msg}")
         else:
             os.kill(pid, signal.SIGTERM)
             break
-
 
 print("\n[-] Connection closed.")
 my_socket.close()
