@@ -26,7 +26,7 @@ print("\n[RSA] Starting RSA Handshake.")
 print("[RSA] Generating client public and private key...")
 # RSA Server data
 n, d, e = RSA_key()
-client_msg = str(n) + "\n"
+client_msg = str(n)
 my_socket.sendall(client_msg.encode())
 print("[RSA] Client public key sent.")
 print("[RSA] Waiting for server public key...")
@@ -34,18 +34,6 @@ server_msg = my_socket.recv(4096).decode()
 n_server= int(server_msg)
 print(f"[RSA] Server public key is ({n_server}, 65537).")
 print("[RSA] Handshake completed.\n")
-
-
-"""Traceback (most recent call last):
-  File "/home/anthonyfraga/Bureau/chatRSA/client.py", line 57, in <module>
-    server_msg = decrypt(RSA_server_msg, n, d)
-  File "/home/anthonyfraga/Bureau/chatRSA/rsa.py", line 86, in decrypt
-    uncipher = lpowmod(cipher, d, n)
-  File "/home/anthonyfraga/Bureau/chatRSA/rsa.py", line 28, in lpowmod
-    x = (x*x)%n
-TypeError: can't multiply sequence by non-int of type 'str'
-"""
-
 
 pid = os.fork()
 
@@ -61,10 +49,8 @@ if pid == 0:
 else:
     # Parent process (receive messages)
     while(1):
-        server_msg = ""
         encrypted_data = int(my_socket.recv(4096).decode())
-        data = decrypt(encrypted_data, n, d)
-        server_msg = data
+        server_msg = decrypt(encrypted_data, n, d)
         if server_msg != "\quit":
             print("[Server] > %s" % (server_msg))
         else:

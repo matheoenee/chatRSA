@@ -57,7 +57,7 @@ def prime_generator(lenght=1024):
         r = subprocess.run(command + a, shell=True,stdout=subprocess.PIPE)
         result = r.stdout
 
-        match = re.search(rb'not', result)
+        match = re.search(rb'not', result) #return True si 'not' apparrait dans le message
         if not match:
             return p
 
