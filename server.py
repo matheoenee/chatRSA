@@ -5,14 +5,14 @@ import sys
 import os
 from rsa import *
 
-host = '127.0.0.1' # accept all host
+local_address = socket.gethostbyname(socket.gethostname())
 port_number = 8080
 
 # socket waiting for connection
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
 
 try:
-    my_socket.bind((host, port_number))
+    my_socket.bind((local_address, port_number))
 except socket.error:
     print("ERROR : socket binding.")
     sys.exit()
