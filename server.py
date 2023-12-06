@@ -44,7 +44,9 @@ if pid == 0:
     # Child process (send messages)
     # Add RSA
     while(1):
-        server_msg = input()
+        #server_msg = input()
+        input_serveur = input()
+        server_msg = encrypt(input_serveur, n_client)
         connection.sendall(server_msg.encode())
         if server_msg == "\quit":
             os.kill(os.getppid(), signal.SIGTERM)
@@ -52,14 +54,15 @@ if pid == 0:
 else:
     # Parent process (receive messages)
     while(1):
-        client_msg = connection.recv(1024).decode()
+        #client_msg = connection.recv(1024).decode()
+        RSA_client_msg = connection.recv(1024).decode()
+        client_msg = decrypt(RSA_client_msg, n, d)
         if client_msg != "\quit":
             print("[Client] > %s" % (client_msg))
         else:
             os.kill(pid, signal.SIGTERM)
-            # server_msg = "END" ça marche ?
-            break  # ça marche pas vraiment
+            break
 
-print("\n[-] Connection closed.")
+print("\n[-] Connection closed.")   
 connection.close()
 sys.exit()
