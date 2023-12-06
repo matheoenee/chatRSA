@@ -25,7 +25,7 @@ def lpowmod(x, y, n):
             result = (result*x)%n
         y >>= 1
         x = (x*x)%n
-        return result
+    return result
 
 #générateur d'entier premier
 def prime_generator(lenght=1024):
@@ -102,8 +102,7 @@ if __name__ == "__main__":
     print("key founded !")
 
     test = 'Hello World'
-    cipher_test = encrypt(test, N)
-    str_cipher = str(cipher_test)
-    int_cipher = int(str_cipher)
+    cipher_test = str(encrypt(test, N))
+    int_cipher = int(cipher_test)
     decrypted_test = decrypt(int_cipher, N, D)
-    print(f"Original message : {test}\nCiphered message : {cipher_test}\nEnciphered Message : {decrypted_test}")
+    print(f"Original message : {test}\nCiphered message : {cipher_test} {int_cipher}\nEnciphered Message : {decrypted_test}")
