@@ -5,14 +5,15 @@ import sys
 import os
 from rsa import *
 
-host = '127.0.0.1' # accept all host
+address = "172.20.10.13"
+#address = "127.0.0.1" #use for local connection
 port_number = 8080
 
 # socket waiting for connection
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
 
 try:
-    my_socket.bind((host, port_number))
+    my_socket.bind((address, port_number))
 except socket.error:
     print("ERROR : socket binding.")
     sys.exit()
@@ -33,7 +34,7 @@ client_msg = connection.recv(4096).decode()
 n_client = int(client_msg)
 print(f"[RSA] Client public key is ({n_client}, 65537).")
 # RSA Server data
-server_msg = str(n) + "\n"
+server_msg = str(n)
 connection.sendall(server_msg.encode())
 print("[RSA] Server public key sent.")
 print("[RSA] Handshake completed.\n")
@@ -54,10 +55,8 @@ else:
     # Parent process (receive messages)
     while(1):
         # Boucle car on récupère les messages par blocs de 1024 bits
-        client_msg = ""
         encrypted_data = int(connection.recv(4096).decode())
-        data = decrypt(encrypted_data, n, d)
-        client_msg = data
+        client_msg = decrypt(encrypted_data, n, d)
         if client_msg != "\quit":
             print("[Client] > %s" % (client_msg))
         else:
