@@ -21,16 +21,16 @@ def lpowmod(x, y, n):
     """puissance modulaire: (x**y)%n avec x, y et n entiers"""
     result = 1
     while y>0:
-        if y&1>0:
+        if y%2==1:
             result = (result*x)%n
-        y >>= 1
         x = (x*x)%n
+        y = y//2
     return result
 
 #générateur d'entier premier
 def prime_generator(lenght=1024):
     #étape 1 : liste de 1024 chiffres
-    A = random.choices(range(0,10), k=1024)
+    A = random.choices(range(0,10), k=lenght)
     #pour changer le dernier nombre car il appartenait à [1,3,7,9]
     n1_choice = range(0,10)
     #n0 permet d'éviter les cas pair et multiple de 5
@@ -69,7 +69,7 @@ def RSA_key():
     n = p*q
     phi_n = (p-1)*(q-1)
     # d=e⁻¹ mod phi_n
-    d = modinv(phi_n, e)
+    d = modinv(e, phi_n)
     if not d:
         #this case will not appear as long as e is Fermat number
         return None
@@ -105,4 +105,4 @@ if __name__ == "__main__":
     cipher_test = str(encrypt(test, N))
     int_cipher = int(cipher_test)
     decrypted_test = decrypt(int_cipher, N, D)
-    print(f"Original message : {test}\nCiphered message : {cipher_test} {int_cipher}\nEnciphered Message : {decrypted_test}")
+    print(f"Original message : {test}\nEnciphered Message : {decrypted_test}")
