@@ -103,5 +103,7 @@ if __name__ == "__main__":
 
     test = 'Hello World'
     cipher_test = encrypt(test, N)
-    decrypted_test = decrypt(cipher_test, N, D)
+    str_cipher = str(cipher_test)
+    int_cipher = int(str_cipher)
+    decrypted_test = decrypt(int_cipher, N, D)
     print(f"Original message : {test}\nCiphered message : {cipher_test}\nEnciphered Message : {decrypted_test}")
