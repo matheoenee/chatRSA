@@ -26,14 +26,20 @@ print("[+] Client connected %s, port %s" % (address[0],address[1]))
 
 # RSA Handshake
 print("\n[RSA] Starting RSA Handshake.")
+print("[RSA] Generating server public and private key...")
+n, d, e = RSA_key() # generating keys here to save time
 print("[RSA] Waiting for client public key...")
-client_msg = connection.recv(1024).decode()
+client_msg = ""
+# Boucle car on récupère les messages par blocs de 1024 bits
+while(1):
+    data = connection.recv(1024).decode()
+    if not data or "\n" in data:
+        break
+    client_msg += data
 n_client = int(client_msg)
 print(f"[RSA] Client public key is ({n_client}, 65537).")
-print("[RSA] Generating server public and private key...")
 # RSA Server data
-n, d, e = RSA_key()
-server_msg = str(n)
+server_msg = str(n) + "\n"
 connection.sendall(server_msg.encode())
 print("[RSA] Server public key sent.")
 print("[RSA] Handshake completed.\n")
@@ -44,19 +50,23 @@ if pid == 0:
     # Child process (send messages)
     # Add RSA
     while(1):
-        #server_msg = input()
-        input_serveur = input()
-        server_msg = encrypt(input_serveur, n_client)
-        connection.sendall(server_msg.encode())
+        server_msg = input()
+        encrypted_server_msg = str(encrypt(server_msg + "\n", n_client))
+        connection.sendall(encrypted_server_msg.encode())
         if server_msg == "\quit":
             os.kill(os.getppid(), signal.SIGTERM)
             break  # marche bien mais provoque un problème du côté client
 else:
     # Parent process (receive messages)
     while(1):
-        #client_msg = connection.recv(1024).decode()
-        RSA_client_msg = connection.recv(1024).decode()
-        client_msg = decrypt(RSA_client_msg, n, d)
+        # Boucle car on récupère les messages par blocs de 1024 bits
+        client_msg = ""
+        while(1):
+            encrypted_data = int(connection.recv(1024).decode())
+            data = decrypt(encrypted_data, n, d)
+            if not data or "\n" in data:
+                break
+            client_msg += data
         if client_msg != "\quit":
             print("[Client] > %s" % (client_msg))
         else:
