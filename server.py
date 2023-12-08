@@ -49,6 +49,7 @@ if pid == 0:
         encrypted_server_msg = str(encrypt(server_msg, n_client))
         connection.sendall(encrypted_server_msg.encode())
         if server_msg == "\quit":
+            print("\n[-] Connection closed.")
             os.kill(os.getppid(), signal.SIGTERM)
             break
 else:
@@ -59,9 +60,9 @@ else:
         if client_msg != "\quit":
             print(f"[Client] > {client_msg}")
         else:
+            print("\n[-] Connection closed by the client.")
             os.kill(pid, signal.SIGTERM)
             break
 
-print("\n[-] Connection closed.")   
 connection.close()
 sys.exit()
