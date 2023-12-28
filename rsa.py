@@ -21,16 +21,17 @@ def lpowmod(x, y, n):
     """puissance modulaire: (x**y)%n avec x, y et n entiers"""
     result = 1
     while y>0:
-        if y%2==1:
+        if y&1>0:
             result = (result*x)%n
+        y >>= 1
         x = (x*x)%n
-        y = y//2
     return result
 
 def prime_generator(lenght=1024):
     A = random.choices(range(0,10), k=lenght)
     n1_choice = range(0,10)
     n0_choice = [1,3,7,9]
+    ite = 1
     while True:
         A = A[1:]
         if A[0] == '0':
@@ -48,7 +49,9 @@ def prime_generator(lenght=1024):
 
         match = re.search(rb'not', result)
         if not match:
-            return p
+            print(ite)
+            return p, ite
+        ite += 1
 
 def RSA_key():
     #choice of e predetermined
@@ -84,13 +87,22 @@ def decrypt(cipher: int, n: int, d):
 
 
 if __name__ == "__main__":
+    from math import log
     print("Test Area !")
-    print("Searching for RSA public and private key ...")
-    N, D, E = RSA_key()
-    print("key founded !")
+    #print("Searching for RSA public and private key ...")
+    #N, D, E = RSA_key()
+    #print("key founded !")
+    print("Looking for average of iteration in prime_generator function")
+    r = 100
+    sum = 0
+    for i in range(r):
+        sum += prime_generator()[1]
+    moy = sum / r
+    print(f"For {r} prime numbers found, the average of iteration in the prime_generator function is : {moy}")
+    print("Tests made with parameter lenght=1024")
 
-    test = 'Hello World'
+    """test = 'Hello World'
     cipher_test = str(encrypt(test, N))
     int_cipher = int(cipher_test)
     decrypted_test = decrypt(int_cipher, N, D)
-    print(f"Original message : {test}\nEnciphered Message : {decrypted_test}")
+    print(f"Original message : {test}\nEnciphered Message : {decrypted_test}")"""
