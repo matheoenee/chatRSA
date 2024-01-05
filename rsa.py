@@ -18,7 +18,7 @@ def modinv(a, m):
     return x % m
 
 def lpowmod(x, y, n):
-    """modular power : (x**y)%n with x, y et n integers"""
+    """modular power : (x**y)%n with x, y and n integers"""
     result = 1
     while y>0:
         if y%2==1:
