@@ -6,7 +6,7 @@ import os
 from rsa import *
 
 address = "192.168.1.2" # change with your server's IP address
-#address = "127.0.0.1" # use for local connections and tests
+# address = "127.0.0.1" # use for local connections and tests
 port_number = 8790
 
 # Socket waiting for connection
