@@ -18,7 +18,7 @@ def modinv(a, m):
     return x % m
 
 def lpowmod(x, y, n):
-    """puissance modulaire: (x**y)%n avec x, y et n entiers"""
+    """modular power : (x**y)%n with x, y et n integers"""
     result = 1
     while y>0:
         if y%2==1:
@@ -27,37 +27,40 @@ def lpowmod(x, y, n):
         y = y//2
     return result
 
-#générateur d'entier premier
+# prime generators
 def prime_generator(lenght=1024):
-    #étape 1 : liste de 1024 chiffres
     A = random.choices(range(0,10), k=lenght)
-    #pour changer le dernier nombre car il appartenait à [1,3,7,9]
+
+    # to change the second last digit during the loop n+1 (last digit during the loop n so belongs to [1,3,7,9])
     n1_choice = range(0,10)
-    #n0 permet d'éviter les cas pair et multiple de 5
+
+    # avoid even cases and multiples of 5 (last digit)
     n0_choice = [1,3,7,9]
+
     while True:
-        #on récupère les 1023 derniers chiffres
+        # we take the last 1023 digits
         A = A[1:]
-        #gestion du cas où le premier chiffre est 0
+        # case where the first digit is '0'
         if A[0] == '0':
             A[0] = random.choice(range(1,10))
-        #changement du dernier chiffre, puis ajout pour atteindre 1024
+
+        # change last digit and add new one to reach 1024 digits
         A[-1] = random.choice(n1_choice)
         A.append(random.choice(n0_choice))
 
         a=''
-        #a est le nombre test en str
         a = ''.join(map(str,A))
+        # be careful : variable 'a' is a String
 
-        #p est un nombre a 1024 chiffres
         p = int(a)
+        # p is an integer
 
-        #vérifions si p est premier
+        # check if p is prime number
         command = 'openssl prime '
         r = subprocess.run(command + a, shell=True,stdout=subprocess.PIPE)
         result = r.stdout
 
-        match = re.search(rb'not', result) #return True si 'not' apparrait dans le message
+        match = re.search(rb'not', result) # return True if 'not' is in the result
         if not match:
             return p
 
@@ -92,17 +95,4 @@ def decrypt(cipher: int, n: int, d):
         number = uncipher % 256
         message += chr(number)
         uncipher = uncipher // 256
-    return message        
-
-
-if __name__ == "__main__":
-    print("Test Area !")
-    print("Searching for RSA public and private key ...")
-    N, D, E = RSA_key()
-    print("key founded !")
-
-    test = 'Hello World'
-    cipher_test = str(encrypt(test, N))
-    int_cipher = int(cipher_test)
-    decrypted_test = decrypt(int_cipher, N, D)
-    print(f"Original message : {test}\nEnciphered Message : {decrypted_test}")
+    return message

@@ -6,10 +6,10 @@ import os
 from rsa import *
 
 
-port_number = 8080
+port_number = 8790
 host = input("Enter server IP address : ")
 
-# socket waiting for connection
+# Socket waiting for connection
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
 
 try:
@@ -24,9 +24,8 @@ print(f"[+] Connection established with server {host} on port {port_number}.")
 # RSA Handshake
 print("\n[RSA] Starting RSA Handshake.")
 print("[RSA] Generating client public and private key...")
-# RSA Server data
 n, d, e = RSA_key()
-client_msg = str(n)
+client_msg = str(n) # RSA Client data
 my_socket.sendall(client_msg.encode())
 print("[RSA] Client public key sent.")
 print("[RSA] Waiting for server public key...")
